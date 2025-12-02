@@ -10,6 +10,14 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+# --- LOGGING FUNCTION ---
+log_action() {
+    local MESSAGE="$1"
+    local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    # Write to the file defined in settings.conf
+    echo "[$TIMESTAMP] [MONITOR] $MESSAGE" >> "$LOG_FILE"
+}
+
 # 1. OS Information
 show_os_info() {
     echo -e "${YELLOW}--- SYSTEM INFORMATION ---${NC}"

@@ -11,6 +11,13 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# --- LOGGING FUNCTION ---
+log_action() {
+    local MESSAGE="$1"
+    local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "[$TIMESTAMP] [NETWORK] $MESSAGE" >> "$LOG_FILE"
+}
+
 # ------------------------------------------------------------------------------
 # 1. Connectivity Tester (Status Signal + Optional Ping)
 # ------------------------------------------------------------------------------
@@ -21,8 +28,10 @@ check_connectivity() {
     # Ping Google DNS once with a 2-second timeout
     if ping -c 1 -W 2 8.8.8.8 > /dev/null 2>&1; then
         echo -e "Current Status: [ ${GREEN}ONLINE${NC} ]"
+        log_action "Connectivity Check: ONLINE"
     else
         echo -e "Current Status: [ ${RED}OFFLINE${NC} ]"
+        log_action "Connectivity Check: OFFLINE (Ping failed)"
     fi
     
     echo ""
@@ -67,6 +76,9 @@ get_ip_addresses() {
 
     echo -e "Internal IP (LAN):  ${GREEN}$PRIVATE_IP${NC}"
     echo -e "Public IP (WAN):    ${BLUE}$PUBLIC_IP${NC}"
+    
+    # Log the discovery
+    log_action "IP Discovery ran (Public IP: $PUBLIC_IP)"
     
     echo ""
     read -p "Press Enter to return..."

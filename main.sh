@@ -10,6 +10,22 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+# Ensure the logs folder exists, otherwise logging fails
+LOG_DIR=$(dirname "$LOG_FILE")
+if [ ! -d "$LOG_DIR" ]; then
+    mkdir -p "$LOG_DIR"
+fi
+
+# Function to write to log
+log_main_action() {
+    local MESSAGE="$1"
+    local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "[$TIMESTAMP] [SYSTEM] $MESSAGE" >> "$LOG_FILE"
+}
+
+# Log that the session started
+log_main_action "Admin session started"
+
 # Menu Function
 show_menu() {
     clear
@@ -35,7 +51,12 @@ while true; do
         3) ./modules/storage.sh ;;
         4) ./modules/network.sh ;;
         5) ./modules/log.sh ;;
-        0) echo "Goodbye!"; exit 0 ;;
+        0)
+            log_main_action "Admin session ended"
+            echo -e "${GREEN}Goodbye!${NC}"
+            exit 0
+            ;;
+            
         *) echo -e "${RED}Invalid Option${NC}"; sleep 1 ;;
     esac
 done
