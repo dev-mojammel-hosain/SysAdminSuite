@@ -10,11 +10,14 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# --- LOGGING FUNCTION ---
+# ROBUST CONFIG LOAD
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+source "$SCRIPT_DIR/../config/settings.conf"
+
+# Logging Function
 log_action() {
     local MESSAGE="$1"
     local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-    # Write to the file defined in settings.conf
     echo "[$TIMESTAMP] [MONITOR] $MESSAGE" >> "$LOG_FILE"
 }
 
@@ -47,6 +50,7 @@ show_disk() {
     
     if [ "$USAGE" -gt 80 ]; then
         echo -e "${RED}CRITICAL: Disk Usage is at ${USAGE}%!${NC}"
+        log_action "WARNING: Disk Usage is High ($USAGE%)"
     else
         echo -e "${GREEN}OK: Disk Usage is at ${USAGE}%${NC}"
     fi
@@ -76,6 +80,10 @@ show_processes() {
 
 # EXECUTE FUNCTIONS
 clear
+
+# Log that the admin opened this module
+log_action "Admin viewed System Health Dashboard"
+
 echo "=========================================="
 echo "      SYSTEM HEALTH DASHBOARD             "
 echo "=========================================="

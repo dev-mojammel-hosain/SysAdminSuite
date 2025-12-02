@@ -1,8 +1,10 @@
 #!/bin/bash
 
 
-# Load Config
-source ./config/settings.conf
+# Get the directory where THIS script is stored
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+# Load config using the absolute path
+source "$SCRIPT_DIR/config/settings.conf"
 
 # Colors
 BLUE='\033[0;34m'
@@ -10,7 +12,7 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# Ensure the logs folder exists, otherwise logging fails
+# Ensure the logs folder exists (LOG_FILE comes from settings.conf)
 LOG_DIR=$(dirname "$LOG_FILE")
 if [ ! -d "$LOG_DIR" ]; then
     mkdir -p "$LOG_DIR"
