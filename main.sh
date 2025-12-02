@@ -1,0 +1,41 @@
+#!/bin/bash
+
+
+# Load Config
+source ./config/settings.conf
+
+# Colors
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+# Menu Function
+show_menu() {
+    clear
+    echo -e "${BLUE}=================================================${NC}"
+    echo -e "${BLUE}       FEDORA SYSADMIN AUTOMATOR v1.0            ${NC}"
+    echo -e "${BLUE}=================================================${NC}"
+    echo "1. System Monitoring (CPU/RAM/Disk)"
+    echo "2. User Management"
+    echo "3. Backup & Storage"
+    echo "4. Network Tools"
+    echo "5. View Logs"
+    echo "0. Exit"
+    echo -e "${BLUE}=================================================${NC}"
+}
+
+# Logic Loop
+while true; do
+    show_menu
+    read -p "Select an option [0-5]: " CHOICE
+    case $CHOICE in
+        1) ./modules/monitor.sh ;;
+        2) ./modules/users.sh ;;
+        3) ./modules/storage.sh ;;
+        4) ./modules/network.sh ;;
+        5) ./modules/log.sh ;;
+        0) echo "Goodbye!"; exit 0 ;;
+        *) echo -e "${RED}Invalid Option${NC}"; sleep 1 ;;
+    esac
+done
