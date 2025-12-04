@@ -3,8 +3,15 @@
 
 # Get the directory where THIS script is stored
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-# Load config using the absolute path
-source "$SCRIPT_DIR/config/settings.conf"
+
+# LOAD SETTINGS (With Error Check)
+CONFIG_FILE="$SCRIPT_DIR/config/settings.conf"
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+else
+    echo "CRITICAL ERROR: Configuration file not found at $CONFIG_FILE"
+    exit 1
+fi
 
 # Colors
 BLUE='\033[0;34m'
@@ -12,10 +19,14 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# Ensure the logs folder exists (LOG_FILE comes from settings.conf)
+# Ensure the logs folder exists
 LOG_DIR=$(dirname "$LOG_FILE")
 if [ ! -d "$LOG_DIR" ]; then
     mkdir -p "$LOG_DIR"
+    # If mkdir fails, we can't log to file, so we print to screen
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Error: Could not create log directory at $LOG_DIR${NC}"
+    fi
 fi
 
 # Function to write to log
