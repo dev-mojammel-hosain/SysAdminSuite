@@ -33,11 +33,15 @@ fi
 log_main_action() {
     local MESSAGE="$1"
     local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-    echo "[$TIMESTAMP] [SYSTEM] $MESSAGE" >> "$LOG_FILE"
+    # Check if LOG_FILE variable exists, if not, fallback
+    local TARGET_LOG="${LOG_FILE:-$SCRIPT_DIR/logs/sys_audit.log}"
+    
+    echo "[$TIMESTAMP] [SYSTEM] $MESSAGE" >> "$TARGET_LOG"
 }
 
-# Log that the session started
+# Log that the session started or error
 log_main_action "Admin session started"
+trap 'log_main_action "Session aborted by user (Ctrl+C)"; exit 1' SIGINT
 
 # Menu Function
 show_menu() {
