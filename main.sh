@@ -74,6 +74,10 @@ while true; do
             exit 0
             ;;
             
-        *) echo -e "${RED}Invalid Option${NC}"; sleep 1 ;;
+        *) 
+            echo -e "${RED}Invalid Option${NC}"
+            log_main_action "Input Error: Invalid menu choice '$CHOICE'"
+            sleep 1 
+            ;;
     esac
 done
