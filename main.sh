@@ -1,17 +1,8 @@
 #!/bin/bash
 
 
-# Get the directory where THIS script is stored
-SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-
-# LOAD SETTINGS (With Error Check)
-CONFIG_FILE="$SCRIPT_DIR/config/settings.conf"
-if [ -f "$CONFIG_FILE" ]; then
-    source "$CONFIG_FILE"
-else
-    echo "CRITICAL ERROR: Configuration file not found at $CONFIG_FILE"
-    exit 1
-fi
+# LOAD SETTINGS
+source "./config/settings.conf"
 
 # Colors
 BLUE='\033[0;34m'
@@ -34,14 +25,13 @@ log_main_action() {
     local MESSAGE="$1"
     local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
     # Check if LOG_FILE variable exists, if not, fallback
-    local TARGET_LOG="${LOG_FILE:-$SCRIPT_DIR/logs/sys_audit.log}"
+    local TARGET_LOG="./logs/sys_audit.log"
     
     echo "[$TIMESTAMP] [SYSTEM] $MESSAGE" >> "$TARGET_LOG"
 }
 
 # Log that the session started or error
 log_main_action "Admin session started"
-trap 'log_main_action "Session aborted by user (Ctrl+C)"; exit 1' SIGINT
 
 # Menu Function
 show_menu() {

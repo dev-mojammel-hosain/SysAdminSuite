@@ -10,9 +10,7 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# ROBUST CONFIG LOAD
-SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-source "$SCRIPT_DIR/../config/settings.conf"
+source "$HOME/SysAdminSuite/config/settings.conf"
 
 # Logging Function
 log_action() {

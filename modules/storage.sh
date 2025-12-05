@@ -12,7 +12,14 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Load Config
-source ./config/settings.conf
+source "$HOME/SysAdminSuite/config/settings.conf"
+
+# Logging Function
+log_action() {
+    local MESSAGE="$1"
+    local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "[$TIMESTAMP] [MONITOR] $MESSAGE" >> "$LOG_FILE"
+}
 
 # ------------------------------------------------------------------------------
 # 1. Directory Size Calculator
@@ -25,6 +32,7 @@ calc_dir_size() {
         echo "Calculating size... (this may take a moment)"
         SIZE=$(sudo du -sh "$TARGET_DIR" 2>/dev/null | cut -f1)
         echo -e "Total Size of ${BLUE}$TARGET_DIR${NC}: ${GREEN}$SIZE${NC}"
+        log_action "Searched Size of '$TARGET_DIR': '$SIZE'"
     else
         echo -e "${RED}Error: Directory '$TARGET_DIR' does not exist.${NC}"
     fi
@@ -75,12 +83,14 @@ clean_temp() {
             echo "Deleting ALL files in $TEMP_PATH..."
             sudo find "$TEMP_PATH" -type f -delete
             echo -e "${GREEN}Cleanup Complete (All files removed).${NC}"
+            log_action "All temp cleaned"
             ;;
         2)
             # Older than 1 Day
             echo "Deleting files older than 1 day..."
             sudo find "$TEMP_PATH" -type f -mtime +1 -delete
             echo -e "${GREEN}Cleanup Complete (>1 Day removed).${NC}"
+            
             ;;
         3)
             # Older than 7 Days

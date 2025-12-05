@@ -12,7 +12,14 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Load Config
-source ./config/settings.conf
+source "$HOME/SysAdminSuite/config/settings.conf"
+
+# Logging Function
+log_action() {
+    local MESSAGE="$1"
+    local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "[$TIMESTAMP] [MONITOR] $MESSAGE" >> "$LOG_FILE"
+}
 
 # ------------------------------------------------------------------------------
 # 1. List All Users (Human & System)
@@ -24,6 +31,8 @@ list_all_users() {
     # Fedora/RHEL/Ubuntu usually start human UIDs at 1000.
     # We parse /etc/passwd looking for UID ($3) >= 1000.
     awk -F: '$3 >= 1000 && $1 != "nobody" {printf "User: %-15s | UID: %s | Shell: %s\n", $1, $3, $7}' /etc/passwd
+    
+    log_action "User list viewed"
     
     echo ""
     read -p "Press Enter to return..."
@@ -51,6 +60,7 @@ manage_add_remove() {
                 sudo useradd -m -s "$DEFAULT_SHELL" "$NEW_USER"
                 if [ $? -eq 0 ]; then
                     echo -e "${GREEN}User '$NEW_USER' created successfully.${NC}"
+                    log_action "New user '$NEW_USER' created"
                     
                     # Set Password
                     echo "Please set a password for $NEW_USER:"
@@ -71,9 +81,11 @@ manage_add_remove() {
                 read -p "Delete home directory too? (y/n): " DEL_HOME
                 if [[ "$DEL_HOME" == "y" || "$DEL_HOME" == "Y" ]]; then
                     sudo userdel -r "$DEL_USER"
+                    log_action "'$DEL_USER' user deleted"
                     echo -e "${GREEN}User '$DEL_USER' and home directory removed.${NC}"
                 else
                     sudo userdel "$DEL_USER"
+                    log_action "'$DEL_USER' user deleted"
                     echo -e "${GREEN}User '$DEL_USER' removed (files kept).${NC}"
                 fi
             fi
