@@ -18,7 +18,7 @@ source "$HOME/SysAdminSuite/config/settings.conf"
 log_action() {
     local MESSAGE="$1"
     local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-    echo "[$TIMESTAMP] [MONITOR] $MESSAGE" >> "$LOG_FILE"
+    echo "[$TIMESTAMP] [User] $MESSAGE" >> "$LOG_FILE"
 }
 
 # ------------------------------------------------------------------------------

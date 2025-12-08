@@ -81,6 +81,7 @@ get_ip_addresses() {
     echo -e "Public IP (WAN):    ${BLUE}$PUBLIC_IP${NC}"
     
     # Log the discovery
+    log_action "IP Discovery ran (Private IP: $PRIVATE_IP)"
     log_action "IP Discovery ran (Public IP: $PUBLIC_IP)"
     
     echo ""
@@ -100,9 +101,7 @@ scan_ports() {
     # Use 'ss' command (modern replacement for netstat)
     # -t (tcp), -u (udp), -l (listening), -n (numeric), -p (process info)
     # sudo is required to see the Process Name
-    sudo ss -tulnp | awk 'NR>1 {print $1, $5, $7}' | \
-    sed 's/users:(("//g' | sed 's/",pid=.*//g' | \
-    awk '{printf "%-10s %-15s %-20s\n", $1, $2, $3}'
+    sudo ss -tulnp | awk 'NR>1 {print $1, $5, $7}' | \ sed 's/users:(("//g' | sed 's/",pid=.*//g' | \ awk '{printf "%-10s %-15s %-20s\n", $1, $2, $3}'
     
     echo "-------------------------------------------------------"
     echo -e "${BLUE}Tip: These are the services actively accepting connections.${NC}"

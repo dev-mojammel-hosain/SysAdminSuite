@@ -37,3 +37,5 @@
 [2025-12-09 01:11:55] [Storage] Cleaned ALL files from /tmp
 [2025-12-09 01:15:35] [Storage] Cleaned files older than 1 day from /tmp
 [2025-12-09 01:15:56] [Storage] Cleaned ALL files and empty folders from /tmp
+[2025-12-09 01:20:54] [NETWORK] Connectivity Check: ONLINE
+[2025-12-09 01:21:05] [NETWORK] IP Discovery ran (Public IP: 165.101.133.38)
