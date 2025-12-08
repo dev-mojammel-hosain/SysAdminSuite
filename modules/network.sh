@@ -11,6 +11,9 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Load Config
+source "$HOME/SysAdminSuite/config/settings.conf"
+
 # --- LOGGING FUNCTION ---
 log_action() {
     local MESSAGE="$1"
