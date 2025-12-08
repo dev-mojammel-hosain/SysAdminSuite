@@ -18,7 +18,7 @@ source "$HOME/SysAdminSuite/config/settings.conf"
 log_action() {
     local MESSAGE="$1"
     local TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-    echo "[$TIMESTAMP] [MONITOR] $MESSAGE" >> "$LOG_FILE"
+    echo "[$TIMESTAMP] [Storage] $MESSAGE" >> "$LOG_FILE"
 }
 
 # ------------------------------------------------------------------------------
@@ -55,6 +55,7 @@ find_large_files() {
         echo "Scanning $SCAN_DIR..."
         echo "---------------------------------------------------"
         sudo find "$SCAN_DIR" -type f -exec du -h {} + 2>/dev/null | sort -rh | head -n 10
+        log_action "Large file viewed on $SCAN_DIR"
         echo "---------------------------------------------------"
     else
         echo -e "${RED}Error: Directory not found.${NC}"
@@ -65,6 +66,12 @@ find_large_files() {
 
 # ------------------------------------------------------------------------------
 # 3. Advanced Temp Cleaner (3 Options)
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# 3. Temp Cleaner (Fixed & Cleaned)
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# 3. Temp Cleaner (Now Removes Empty Folders)
 # ------------------------------------------------------------------------------
 clean_temp() {
     echo -e "${YELLOW}--- ADVANCED TEMP FILE CLEANER ---${NC}"
@@ -79,24 +86,39 @@ clean_temp() {
 
     case $T_CHOICE in
         1)
-            # Delete ALL
-            echo "Deleting ALL files in $TEMP_PATH..."
-            sudo find "$TEMP_PATH" -type f -delete
-            echo -e "${GREEN}Cleanup Complete (All files removed).${NC}"
-            log_action "All temp cleaned"
+            # Delete ALL Files
+            echo "Deleting ALL files..."
+            sudo find "$TEMP_PATH" -type f -delete 2>/dev/null
+            
+            # Delete Empty Directories (The Fix)
+            # -mindepth 1 prevents it from trying to delete /tmp itself
+            echo "Removing empty folders..."
+            sudo find "$TEMP_PATH" -mindepth 1 -type d -empty -delete 2>/dev/null
+            
+            echo -e "${GREEN}Cleanup Complete (Files & Empty Folders removed).${NC}"
+            log_action "Cleaned ALL files and empty folders from /tmp"
             ;;
         2)
             # Older than 1 Day
             echo "Deleting files older than 1 day..."
-            sudo find "$TEMP_PATH" -type f -mtime +1 -delete
-            echo -e "${GREEN}Cleanup Complete (>1 Day removed).${NC}"
+            sudo find "$TEMP_PATH" -type f -mtime +1 -delete 2>/dev/null
             
+            # Remove empty folders older than 1 day
+            sudo find "$TEMP_PATH" -mindepth 1 -type d -mtime +1 -empty -delete 2>/dev/null
+            
+            echo -e "${GREEN}Cleanup Complete (>1 Day removed).${NC}"
+            log_action "Cleaned files older than 1 day from /tmp"
             ;;
         3)
             # Older than 7 Days
             echo "Deleting files older than 7 days..."
-            sudo find "$TEMP_PATH" -type f -mtime +7 -delete
+            sudo find "$TEMP_PATH" -type f -mtime +7 -delete 2>/dev/null
+            
+            # Remove empty folders older than 7 days
+            sudo find "$TEMP_PATH" -mindepth 1 -type d -mtime +7 -empty -delete 2>/dev/null
+            
             echo -e "${GREEN}Cleanup Complete (>7 Days removed).${NC}"
+            log_action "Cleaned files older than 7 days from /tmp"
             ;;
         0)
             echo "Operation Cancelled."
