@@ -115,6 +115,7 @@ search_user() {
         echo -n "Groups: "
         id -Gn "$USERNAME"
         echo "--------------------------------"
+        log_action "New user '$NEW_USER' created"
     else
         echo -e "${RED}User '$USERNAME' not found on this system.${NC}"
     fi
